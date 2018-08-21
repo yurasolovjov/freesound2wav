@@ -2,6 +2,7 @@ import sys, os
 import argparse
 import termcolor
 
+# Подключение модуля freesound
 mainfile = os.path.abspath(sys.modules['__main__'].__file__)
 
 t,h = os.path.split(mainfile)
@@ -11,6 +12,7 @@ sys.path.insert(0,path2fs)
 
 import freesound
 
+# Ключ доступа к Freesound API
 GEN_KEY_FREESOUND = str("PYqNLRWMA9URy55hSbzK5lGxJsgVJaBsvRx6giFG")
 
 def main():
@@ -29,6 +31,9 @@ def main():
         fusion_keyword = str()
         for k in keyword:
             fusion_keyword += k + ' '
+
+        if fusion_keyword[-1] == ' ':
+            fusion_keyword = fusion_keyword[:-1]
 
         search_tokens.append(fusion_keyword)
 
@@ -50,17 +55,21 @@ def main():
 
             results = client.text_search(query=token,fields="id,name,previews")
 
+            output_catalog = os.path.normpath(output + "\\" + str(token))
+
+            if not os.path.exists(output_catalog):
+                os.makedirs(output_catalog)
+
             for sound in results:
                 try:
-                    sound.retrieve_preview(output)
-                    info = "Saved file: " + str(output) + str(sound.name)
+                    sound.retrieve_preview(output_catalog)
+                    info = "Saved file: " + str(output_catalog) + str(sound.name)
                     print(termcolor.colored(info, "green"))
                 except:
-                    print(termcolor.colored("Sound can`t be saved", "red"))
+                    info = str("Sound can`t be saved to " + str(output_catalog) + str(sound.name) )
+                    print(termcolor.colored(info, "red"))
         except:
             print(termcolor.colored(" Search is failed ", "red"))
-
-
 
 if __name__ == "__main__":
     main()

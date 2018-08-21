@@ -81,6 +81,7 @@ def main():
                 page_count += 1
 
                 if not results.next or lim_page_count == page_count:
+                    page_count = 0
                     break
 
                 results = results.next_page()

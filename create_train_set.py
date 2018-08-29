@@ -61,6 +61,7 @@ def main():
     parser.add_argument("-i", "--input", help="in-catalog", action="append", default=None, nargs="*")
     parser.add_argument("-o", "--output", help="out-catalog with wav-files", default=None)
     parser.add_argument("--only_csv_create", help="create csv-meta file", default=bool(False))
+    parser.add_argument("--ignore", help="ignore input catalog. Only converted files and create csv metafile", default=bool(False))
     parser.add_argument("--convert", help="Convert files to other pcm", default=bool(False))
     parser.add_argument("--pcm", help="Convert files to pcm 16 or pcm 8", default=int(16000))
 
@@ -71,6 +72,7 @@ def main():
     only_csv = bool(args.only_csv_create)
     convert_files = bool(args.convert)
     pcm = int(args.pcm)
+    ignore = bool(args.ignore)
 
     if pcm != 16000 and pcm != 8000 and convert_files == True:
         raise Exception("pcm is incorrected !")
@@ -100,7 +102,7 @@ def main():
 
     fusionListFiles = list()
 
-    if only_csv == False:
+    if only_csv == False and ignore == False :
         for inputCatalog in search_tokens:
             listFiles,_ = makeWaveFilesList(str(inputCatalog))
             fusionListFiles += listFiles
